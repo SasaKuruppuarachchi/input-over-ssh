@@ -25,3 +25,19 @@ python -u -m input_over_ssh.client -p /dev/input/event1 | ssh hostname.example.c
 For the adventurous, you ought to be able to replace ssh with netcat/socat over UDP to further reduce latency.
 
 For a full list of command-line options, run `python -m input_over_ssh.client --help`.
+
+
+```bash
+cat << 'EOF' >> ~/.bashrc
+
+# Forward Sony Gamepad to remote Isaac Sim server
+forward-joy() {
+    PYTHONPATH=/home/sasa/workspace/earth_rover/src/input-over-ssh \
+    python3 -u -m input_over_ssh.client -n "Sony Computer Entertainment Wireless Controller" | \
+    ssh -o ClearAllForwardings=yes isaac-sauna-tuni \
+    'PYTHONPATH=/home/sasa/workspace/earth_rover/src/input-over-ssh /home/sasa/workspace/earth_rover/src/input-over-ssh/.venv/bin/python -m input_over_ssh.server'
+}
+EOF
+
+source ~/.bashrc
+```

@@ -54,6 +54,9 @@ async def run_forward():
     for path in args.device_by_path:
         devices.append(evdev.InputDevice(path))
     for name in args.device_by_name:
+        if name not in devices_by_name:
+            print(f"Error: Device '{name}' not found. Is it connected?", file=sys.stderr)
+            sys.exit(1)
         devices.append(devices_by_name[name])
 
     # Report version

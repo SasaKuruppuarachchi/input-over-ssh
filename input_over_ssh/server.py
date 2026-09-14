@@ -58,7 +58,15 @@ devices = []
 for device_json in devices_json:
     capabilities = {}
     for k, v in device_json['capabilities'].items():
-        capabilities[int(k)] = v
+        ik = int(k)
+        if ik == evdev.ecodes.EV_ABS:
+            capabilities[ik] = [
+                (item[0], evdev.AbsInfo(**item[1])) if isinstance(item, (list, tuple)) and len(item) == 2 and isinstance(item[1], dict)
+                else item
+                for item in v
+            ]
+        else:
+            capabilities[ik] = v
     devices.append(evdev.UInput(capabilities, name=device_json['name'] + ' (via input-over-ssh)', vendor=device_json['vendor'], product=device_json['product']))
 
 print('Device created')
